@@ -765,7 +765,13 @@ export default class DevServer {
 
     // Start the filesystem watcher
     this.watcher = watch(this.cwd, {
-      ignored: (path: string) => !this.filter(path),
+      ignored: (path: string) => {
+        const ig = !this.filter(path);
+        this.output.debug(
+          `${ig ? chalk.green('Ignoring') : chalk.red('Watching')} ${path}`
+        );
+        return ig;
+      },
       ignoreInitial: true,
       useFsEvents: false,
       usePolling: false,
