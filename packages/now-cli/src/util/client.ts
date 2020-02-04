@@ -57,10 +57,17 @@ export default class Client extends EventEmitter {
   }
 
   _fetch(_url: string, opts: FetchOptions = {}) {
+    console.log('_fetch url ' + _url);
+
     const parsedUrl = parseUrl(_url, true);
+
+    console.log({ parsedUrl });
+
     const apiUrl = parsedUrl.host
       ? `${parsedUrl.protocol}//${parsedUrl.host}`
       : '';
+
+    console.log({ apiUrl });
 
     if (opts.accountId || opts.useCurrentTeam !== false) {
       const query = parsedUrl.query;
@@ -75,7 +82,10 @@ export default class Client extends EventEmitter {
         query.teamId = this.currentTeam;
       }
 
-      _url = `${apiUrl}${parsedUrl.pathname}?${qs.stringify(query)}`;
+      const queryPart = qs.stringify(query);
+      _url = `${apiUrl}${parsedUrl.pathname}?${
+        queryPart ? `?${queryPart}` : ''
+      }`;
 
       delete opts.useCurrentTeam;
       delete opts.accountId;
@@ -102,6 +112,8 @@ export default class Client extends EventEmitter {
   }
 
   async fetch<T>(url: string, opts: FetchOptions = {}): Promise<T> {
+    console.log('fetching url ' + url);
+
     return this.retry(async bail => {
       const res = await this._fetch(url, opts);
       if (res.ok) {

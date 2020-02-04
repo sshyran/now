@@ -5,6 +5,9 @@ import { APIError, InvalidToken, MissingUser } from './errors-ts';
 let user: User | undefined;
 
 export default async function getUser(client: Client) {
+  console.log('getUser');
+  console.log({ user });
+
   if (user) return user;
 
   try {
